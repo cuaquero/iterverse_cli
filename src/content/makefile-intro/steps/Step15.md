@@ -36,13 +36,16 @@ to_upper = $(shell echo "$(1)" | tr '[:lower:]' '[:upper:]')
 - Here, we're converting every lower case character into upper case.
 
 Now, we can update our implicit rule to use `to_upper` with the special function `call`,
-then build the recipe again and print out the file:
+then build the recipe, and print out the file:
 
 ```Makefile
 story-%.txt:
 	@echo "$($(call to_upper,$*))" > $@
 ```
 
-<Execute command="make clean story-beginning.txt; cat story-beginning.txt" />
+<Execute command="make story-beginning.txt; cat story-beginning.txt" />
 
-Did it print "\* is up to date"? Let's make it easier to reset our targets next.
+Did it print "\* is up to date"? You can remove the file and try again, but let's make
+it easier to reset our targets next.
+
+<Execute command="rm story-beginning.txt" />
