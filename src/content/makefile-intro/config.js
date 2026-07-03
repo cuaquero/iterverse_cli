@@ -19,7 +19,6 @@ import Step16 from "./steps/Step16.md";
 import Step17 from "./steps/Step17.md";
 import Step18 from "./steps/Step18.md";
 import Step19 from "./steps/Step19.md";
-import Example from "./steps/Example.md";
 import Conclusion from "./steps/Conclusion.md";
 // Exercises
 import Exercise1 from "./exercises/Exercise1.md";
@@ -92,8 +91,6 @@ export const config = {
 		{ name: "Stay on target", component: Step17 },
 		{ name: "You're all clear, kid", component: Step18 },
 		{ name: "One in a million", component: Step19 },
-
-		// Examples
 		{ name: "The end", component: Conclusion, header: true },
 
 		// Exercises
