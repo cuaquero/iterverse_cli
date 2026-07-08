@@ -31,31 +31,6 @@ Once you share the Markdown and data files, we'll get the tutorial up and runnin
 
 ---
 
-# Gists (beta)
-
-You can use the sandbox.bio command line environment to share small snippets of code, make them interactive, and include sample data files:
-
-|GitHub Gist||sandbox.bio|
-|--|--|--|
-| <img src="https://github.com/user-attachments/assets/81129198-aeba-417f-a080-bca31153d93c" height="320"> | ➡️ | <img src="https://github.com/user-attachments/assets/a556c66e-46ba-4760-9c11-8b8ceaca06c7" height="400"> |
-|[gist.github.com/9ee9bd2dd6be673acdc6971e852a28a3](https://gist.github.com/robertaboukhalil/9ee9bd2dd6be673acdc6971e852a28a3)||[sandbox.bio/gists/9ee9bd2dd6be673acdc6971e852a28a3](https://sandbox.bio/gists/9ee9bd2dd6be673acdc6971e852a28a3)|
-
-1. Create a GitHub Gist at https://gist.github.com/
-	- [ ] Create a `.md` Markdown file with notes about the commands. Bash code blocks are runnable within sandbox.bio
-	- [ ] Add data files if relevant. These **files will be available in the sandbox.bio command-line environment at load time**!
-2. Once created, the URL contains the gist ID, e.g. gist.github.com/gists/username/gist_id
-3. All you have to do is go to sandbox.bio/gists/gist_id (no need for the username, just the gist ID)
-
-sandbox.bio will render the Markdown file(s) from the Gist, show code blocks with syntax highlighting, and allow users to run the code blocks in their sandbox.bio terminal environment, where data files will be ready for them.
-
-Limitations:
-* GitHub Gists don't support binary files except common ones like zip files
-* For larger files, you can use the GitHub command line tool to upload them more easily:
-  * Upload local file: `gh gist edit GIST_ID_HERE ./path/to/data.fastq --add data.fastq`
-  * Modify existing file: `gh gist edit GIST_ID_HERE ./path/to/data.fastq --filename data.fastq`
-
----
-
 # Local development
 
 ## Setup
