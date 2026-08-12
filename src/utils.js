@@ -1,11 +1,5 @@
-import { get } from "svelte/store";
 import localforage from "localforage";
-import { createClient } from "@supabase/supabase-js";
-import { env } from "$env/dynamic/public";
 import { LOGGING, LOGGING_DEBUG } from "$src/config";
-import { user } from "$stores/user";
-
-export const supabaseAnon = createClient(env.PUBLIC_SUPABASE_URL, env.PUBLIC_SUPABASE_API_KEY);
 
 // =============================================================================
 // Local state management
@@ -19,8 +13,7 @@ export const STATE_IDE = "ide";
 
 export class LocalState {
 	static async getKey(state, description = "") {
-		const prefix = get(user)?.email || "guest";
-		return `${prefix}:${state}:${description}`;
+		return `local:${state}:${description}`;
 	}
 
 	// -------------------------------------------------------------------------
@@ -88,12 +81,6 @@ export class LocalState {
 // =============================================================================
 // Utility functions
 // =============================================================================
-
-// Get table name based on environment. Only use this for public.* tables
-export function t(tableName) {
-	if (env.PUBLIC_ENVIRONMENT !== "prd") return `${tableName}_stg`;
-	return tableName;
-}
 
 export function log(level, ...message) {
 	if (LOGGING >= level) {

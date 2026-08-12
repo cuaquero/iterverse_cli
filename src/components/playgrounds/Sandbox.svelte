@@ -55,19 +55,6 @@ async function run() {
 		const { stdout, stderr } = await CLI.exec(tool.aioli.tool, params);
 		output = stdout;
 		error = stderr;
-
-		// Analytics
-		try {
-			const d = {
-				playground: tool.name,
-				example: hasExample > -1
-			};
-			fetch(`/api/v1/ping`, {
-				method: "POST",
-				mode: "no-cors",
-				body: JSON.stringify(d)
-			});
-		} catch (error) {}
 	} catch (error) {
 		console.error(error);
 	} finally {

@@ -12,9 +12,9 @@ $: step = +$page.params.step || 0;
 
 <svelte:head>
 	{#if tutorial?.name}
-		<title>{tutorial.name} - sandbox.bio</title>
+		<title>{tutorial.name} - cli_box</title>
 	{:else}
-		<title>sandbox.bio</title>
+		<title>cli_box</title>
 	{/if}
 </svelte:head>
 

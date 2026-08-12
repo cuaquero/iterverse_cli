@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Tutorials - sandbox.bio</title>
+	<title>Labs - cli_box</title>
 </svelte:head>
 
 <slot />

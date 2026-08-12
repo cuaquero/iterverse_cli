@@ -1,12 +1,9 @@
 <script>
-import { onMount } from "svelte";
 import { Button, DropdownItem, Offcanvas } from "sveltestrap";
 import { afterNavigate } from "$app/navigation";
-import { progress } from "$stores/progress";
 import { status } from "$stores/status";
 import Alert from "$components/Alert.svelte";
 import Terminal from "$components/Terminal.svelte";
-import IGV from "$components/igv/IGV.svelte";
 
 export let tutorial;
 export let step = 0;
@@ -17,16 +14,11 @@ let tocOpen = false;
 let stepInfo = {};
 
 // Reactive statements
-$: goToStep(step);
+$: stepInfo = tutorial.steps[step] || {};
 $: isFirstStep = step === 0;
 $: isLastStep = step === tutorial.steps.length - 1;
-// If invalid step (e.g. a tutorial was shortened, update $progress accordingly)
+// If invalid step (e.g. a lab was shortened), go back to the start of the lab
 $: if (tutorial.steps.length > 0 && (step < 0 || step >= tutorial.steps.length)) {
-	// If progress showing invalid step number, update it
-	if ($progress?.[tutorial.id]?.step) {
-		if (step < 0) $progress[tutorial.id].step = 0;
-		else $progress[tutorial.id].step = tutorial.steps.length - 1;
-	}
 	window.location = `/tutorials/${tutorial.id}`;
 }
 
@@ -35,36 +27,6 @@ afterNavigate(() => {
 	document.getElementById("tutorial-sidebar")?.scrollTo(0, 0);
 });
 
-// Handle analytics
-async function logStep(from, to) {
-	try {
-		fetch(`/api/v1/ping`, {
-			method: "POST",
-			mode: "no-cors",
-			body: JSON.stringify({ from, to, tutorial: tutorial.id })
-		});
-	} catch (error) {
-		console.error(error);
-	}
-}
-
-function goToStep(stepNb) {
-	stepInfo = tutorial.steps[stepNb];
-
-	// Update progress in one shot (each time change $progress, makes call to DB)
-	let progressNew = $progress || {};
-	if (!(tutorial.id in progressNew)) progressNew[tutorial.id] = { step: 0 };
-	// But only if the current step is greater!
-	if (stepNb > progressNew[tutorial.id].step) {
-		progressNew[tutorial.id].step = stepNb;
-		$progress = progressNew;
-	}
-}
-
-// When first visit a tutorial
-onMount(() => {
-	logStep(null, step);
-});
 </script>
 
 <div class="container-fluid pb-3 px-0">
@@ -112,7 +74,6 @@ onMount(() => {
 									href={isFirstStep ? "#" : `/tutorials/${tutorial.id}` + (step === 1 ? "" : `/${step - 1}`)}
 									color={isFirstStep ? "secondary" : "primary"}
 									size="sm"
-									on:click={() => logStep(step, step - 1)}
 								>
 									&larr;<span class="mobile-hide">&nbsp;Previous</span>
 								</Button>
@@ -121,15 +82,11 @@ onMount(() => {
 									href={isLastStep ? "#" : `/tutorials/${tutorial.id}/${step + 1}`}
 									color={isLastStep ? "secondary" : "primary"}
 									size="sm"
-									on:click={() => logStep(step, step + 1)}
 								>
 									<span class="mobile-hide">Next&nbsp;</span>&rarr;
 								</Button>
 							</div>
 							<div>
-								<a href="https://github.com/sandbox-bio/sandbox.bio/discussions" target="_blank" rel="noreferrer">
-									<span class="badge rounded-pill bg-secondary">Help</span>
-								</a>
 								<span on:click={tocToggle} class="badge rounded-pill bg-info">{step + 1} / {tutorial.steps.length}</span>
 							</div>
 						</div>
@@ -137,10 +94,7 @@ onMount(() => {
 				</div>
 			</div>
 		{/if}
-		{#if tutorial.igv === true}
-			{@const config = { ...tutorial.igvConfig.default, ...tutorial.igvConfig[step] }}
-			<IGV options={config} />
-		{:else if tutorial.id != null}
+		{#if tutorial.id != null}
 			<div id="terminal-wrapper" class="border rounded-3 p-2">
 				<Terminal
 					on:status={(event) => ($status.terminal = event.detail)}
@@ -155,15 +109,10 @@ onMount(() => {
 		{:else}
 			<div>
 				<Alert color="warning">
-					<p>
-						<strong>This tutorial does not exist.</strong>
-					</p>
-					<p>
-						Please <a href="https://github.com/sandbox-bio/sandbox.bio/discussions/new?category=general">reach out to us</a> and let us know how you got
-						here so we can fix the broken link. Please include the original page that brought you here, thank you!
-					</p>
+					<p><strong>This lab does not exist.</strong></p>
+					<p>The link may be out of date. Please let your instructor know how you got here.</p>
 				</Alert>
-				<Button color="primary" href="/tutorials">Browse tutorials &rarr;</Button>
+				<Button color="primary" href="/">Browse labs &rarr;</Button>
 			</div>
 		{/if}
 	</div>

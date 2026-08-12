@@ -12,9 +12,6 @@ fi
 echo "Setting up env file..."
 cat > .env <<EOF
 PUBLIC_USE_PRD_ASSETS=true
-PUBLIC_SUPABASE_URL=https://127.0.0.1
-PUBLIC_SUPABASE_API_KEY=mock
-SUPABASE_API_KEY=mock
 EOF
 
 # Build data/ folder
@@ -32,4 +29,4 @@ if ! npm install > /dev/null; then
 fi
 
 # Launch web server
-npm run dev -- --open /tutorials/_template
+npm run dev -- --open /
