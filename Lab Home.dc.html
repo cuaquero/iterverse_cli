@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/btech-design-system-8c071c19-9195-4636-af65-312a715d219f/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/btech-design-system-8c071c19-9195-4636-af65-312a715d219f/tokens/colors.css">
+<link rel="stylesheet" href="_ds/btech-design-system-8c071c19-9195-4636-af65-312a715d219f/tokens/typography.css">
+<link rel="stylesheet" href="_ds/btech-design-system-8c071c19-9195-4636-af65-312a715d219f/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/btech-design-system-8c071c19-9195-4636-af65-312a715d219f/styles.css">
+<script src="_ds/btech-design-system-8c071c19-9195-4636-af65-312a715d219f/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #ffffff; }
+  a { color: #d22030; text-decoration: none; }
+  a:hover { color: #a81826; }
+</style>
+</helmet>
+
+<div style="font-family: Roboto, Helvetica, sans-serif; color: #36393b; background: #ffffff; min-height: 100vh;">
+
+  <div style="border-bottom: 1px solid #e0e0e2;">
+    <div style="max-width: 1080px; margin: 0 auto; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img src="assets/logo-mark.png" alt="Bridgerland Technical College" style="height: 34px; width: auto; display: block;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div style="font-size: 17px; font-weight: 700; letter-spacing: 0.01em;">cli_box</div>
+          <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6a6a70;">Bridgerland Technical College</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 28px; font-size: 14px;">
+        <a href="#" style="color: #36393b; border-bottom: 2px solid #d22030; padding-bottom: 3px;">Labs</a>
+        <a href="#" style="color: #6a6a70;">Sandbox</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1080px; margin: 0 auto; padding: 44px 32px 72px;">
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 6px;">
+      <h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em;">Command line labs</h1>
+      <div style="font-size: 13px; color: #6a6a70;">{{ courseLabel }}</div>
+    </div>
+    <p style="margin: 0 0 32px; font-size: 15px; line-height: 1.55; color: #56565b; max-width: 60ch; text-wrap: pretty;">Each lab runs a real Linux shell in the browser. Nothing to install, and nothing a student can break.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+      <sc-for list="{{ labs }}" as="lab" hint-placeholder-count="2">
+        <div style="border: 1px solid #e0e0e2; border-radius: 6px; padding: 24px; display: flex; flex-direction: column; gap: 14px; background: #ffffff; box-shadow: 0 1px 2px rgba(35,35,38,0.05);">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #d22030;">{{ lab.eyebrow }}</div>
+            <div style="font-size: 12px; color: #8a8a90;">{{ lab.stepLabel }}</div>
+          </div>
+          <div>
+            <h2 style="margin: 0 0 8px; font-size: 20px; font-weight: 700;">{{ lab.name }}</h2>
+            <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #56565b; text-wrap: pretty;">{{ lab.description }}</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto;">
+            <sc-for list="{{ lab.tools }}" as="tool" hint-placeholder-count="4">
+              <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11px; color: #56565b; background: #f7f7f8; border: 1px solid #eeeeef; border-radius: 3px; padding: 3px 7px;">{{ tool }}</span>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding-top: 4px;">
+            <a href="#" style="background: #d22030; color: #ffffff; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 3px;" style-hover="background: #a81826;">Start lab</a>
+            <span style="font-size: 12px; color: #8a8a90;">{{ lab.level }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 20px; border: 1px solid #e0e0e2; border-radius: 6px; padding: 22px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; background: #f7f7f8;">
+      <div>
+        <h2 style="margin: 0 0 6px; font-size: 16px; font-weight: 700;">Sandbox terminal</h2>
+        <p style="margin: 0; font-size: 14px; color: #56565b;">An empty shell with no lesson attached, for practice and demonstrations.</p>
+      </div>
+      <a href="#" style="border: 1px solid #36393b; color: #36393b; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 3px; white-space: nowrap;" style-hover="background: #eeeeef;">Open terminal</a>
+    </div>
+
+    <div style="margin-top: 56px; padding-top: 20px; border-top: 1px solid #eeeeef; display: flex; gap: 28px; font-size: 12px; color: #8a8a90;">
+      <span>Adapted from sandbox.bio, MIT licensed.</span>
+      <a href="#" style="color: #8a8a90;">Report a problem</a>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;courseLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;CompTIA A+ Core II&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;labNumbering&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showTools&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const numbered = this.props.labNumbering ?? true;
+    const showTools = this.props.showTools ?? true;
+    const labs = [
+      {
+        name: "Terminal Basics",
+        description: "Get oriented in the shell: moving between directories, previewing files, filtering text, pipes, redirection, and environment variables.",
+        tools: ["echo", "ls", "head", "tail", "grep", "wc", "cat"],
+        steps: 8,
+        level: "Beginner"
+      },
+      {
+        name: "Terminal Exercises",
+        description: "Graded practice problems covering paths, file operations, pipes and filters, loops, shell scripts, and searching with grep and find.",
+        tools: ["cut", "sort", "uniq", "grep", "wc", "vim", "find"],
+        steps: 25,
+        level: "Intermediate"
+      }
+    ].map((lab, i) => ({
+      ...lab,
+      tools: showTools ? lab.tools : [],
+      eyebrow: numbered ? `Lab ${i + 1}` : lab.level,
+      stepLabel: `${lab.steps} steps`
+    }));
+    return { labs, courseLabel: this.props.courseLabel ?? "CompTIA A+ Core II" };
+  }
+}
+
+</script>
+</body>
+</html>

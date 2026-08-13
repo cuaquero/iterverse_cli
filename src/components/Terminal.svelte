@@ -1,6 +1,6 @@
 <script>
 import { onDestroy, onMount } from "svelte";
-import { Table, Modal, DropdownMenu, Dropdown, DropdownToggle, DropdownItem, Icon, Spinner } from "sveltestrap";
+import { Table, Modal, DropdownMenu, Dropdown, DropdownToggle, DropdownItem, Icon, Spinner, Alert, Button } from "sveltestrap";
 import AnsiUp from "ansi_up";
 import { watchResize } from "svelte-watch-resize";
 import { FitAddon } from "xterm-addon-fit";
@@ -37,6 +37,7 @@ export let intro = ""; // Intro string to display on Terminal once ready (option
 
 let loading = true; // Loading the terminal
 let loadingStatus = []; // Loading progress to show (each element = 1 line)
+let loadError = null; // Set with an error message if terminal initialization fails
 let mounted = false; // Component is mounted and ready to go
 let divXtermTerminal; // Xterm.js terminal
 let inputMountFiles; // Hidden HTML file input element for mounting local file
@@ -61,6 +62,10 @@ const environments = {
 		v86: "prd/"
 	},
 	"sandbox.bio": {
+		url: URL_ASSETS,
+		v86: "prd/"
+	},
+	"cli-box.itstem.org": {
 		url: URL_ASSETS,
 		v86: "prd/"
 	}
@@ -100,6 +105,7 @@ function addLoadingStatus(msg) {
 function initialize(id) {
 	console.log("Initializing terminal...", id);
 	loading = true;
+	loadError = null;
 	console.time("initialize");
 	addLoadingStatus("Setting up your terminal...");
 
@@ -108,7 +114,15 @@ function initialize(id) {
 	if ($cli.emulator) $cli.emulator.destroy();
 
 	// Create emulator
-	const envInfo = getEnvironmentInfo();
+	let envInfo;
+	try {
+		envInfo = getEnvironmentInfo();
+	} catch (error) {
+		console.error(error);
+		loading = false;
+		loadError = `Could not determine which assets to load for hostname "${window.location.hostname}": ${error}`;
+		return;
+	}
 	$cli.emulator = new V86({
 		wasm_path: `/v86/v86.wasm`,
 		memory_size: 1024 * 1024 * 1024,
@@ -179,71 +193,77 @@ function initialize(id) {
 
 	// Prepare terminal environment
 	$cli.emulator.bus.register("emulator-loaded", async () => {
-		$cli.xterm = $cli.emulator.serial_adapter.term;
-		$cli.listeners = $cli.emulator.bus.listeners[BUS_OUTPUT];
+		try {
+			$cli.xterm = $cli.emulator.serial_adapter.term;
+			$cli.listeners = $cli.emulator.bus.listeners[BUS_OUTPUT];
 
-		// Make sure everything loaded correctly. If not, try again.
-		// Otherwise, get issues where `term` variable is null and waiting for it to be set does not help.
-		if (!$cli.xterm) {
-			loading = false;
-			console.warn("Could not load terminal; serial_adapter not defined.");
-			initialize(terminalId);
-			return;
-		}
-
-		// Initialize addons
-		$cli.addons = {
-			serialize: new SerializeAddon(), // Used to export terminal to HTML
-			fit: new FitAddon(), // Fit the terminal onto the screen
-			links: new WebLinksAddon() // Turns text links into hyperlinks
-		};
-		for (const addonName in $cli.addons) {
-			$cli.xterm.loadAddon($cli.addons[addonName]);
-		}
-		console.log("Terminal ready.", $cli);
-
-		// Mount tutorial files and previously synced FS (user's FS overrides default tutorial files)
-		addLoadingStatus("Loading tutorial files...");
-		await mountTutorialFiles();
-		await fsLoad();
-
-		// Preload tools so by the time the user needs them, they are cached. We're done fetching
-		// data from the server so won't compete with other fetch requests.  We use "&" to download
-		// files in parallel as much as possible. The alternative would be to download .bin
-		// files directly but we'd have to generate a list of .bin from `debian-base-fs.json`,
-		// which is prone to changes.
-		$cli.exec(`sync & echo & ls & ll & pwd`, { mode: EXEC_MODE_BUS });
-		$cli.exec(tools.map((t) => `timeout 2 ${t}`).join(" & "), { mode: EXEC_MODE_BUS });
-
-		// Run initialization commands
-		addLoadingStatus("Initializing environment...");
-		$cli.exec(init);
-		// Set initial terminal size, otherwise sometimes doesn't call that function at load time
-		handleResize(true);
-		// Focus cursor on command line
-		$cli.xterm.focus();
-
-		// Sync date and time (otherwise continues from date/time from last boot)
-		$cli.exec(`date -s "${new Date().toString()}"`, { mode: EXEC_MODE_BUS });
-
-		// Make sure root@localhost prompt shows up on screen
-		addLoadingStatus("Putting the finishing touches...");
-		timerWaitForPrompt = setInterval(() => {
-			if (!initial_screen.includes("root@localhost")) {
-				$cli.exec("");
-				// Press Ctrl + L (key code 12) to show the prompt but without extra lines above it
-				$cli.emulator.bus.send(BUS_INPUT, 12);
-				if (intro) $cli.exec(intro);
-			} else {
-				$cli.emulator.remove_listener(BUS_OUTPUT, listenerWaitForPrompt);
-				clearInterval(timerWaitForPrompt);
+			// Make sure everything loaded correctly. If not, try again.
+			// Otherwise, get issues where `term` variable is null and waiting for it to be set does not help.
+			if (!$cli.xterm) {
 				loading = false;
-				console.timeEnd("initialize");
-
-				// Start syncing FS
-				fsSync();
+				console.warn("Could not load terminal; serial_adapter not defined.");
+				initialize(terminalId);
+				return;
 			}
-		}, 200);
+
+			// Initialize addons
+			$cli.addons = {
+				serialize: new SerializeAddon(), // Used to export terminal to HTML
+				fit: new FitAddon(), // Fit the terminal onto the screen
+				links: new WebLinksAddon() // Turns text links into hyperlinks
+			};
+			for (const addonName in $cli.addons) {
+				$cli.xterm.loadAddon($cli.addons[addonName]);
+			}
+			console.log("Terminal ready.", $cli);
+
+			// Mount tutorial files and previously synced FS (user's FS overrides default tutorial files)
+			addLoadingStatus("Loading tutorial files...");
+			await mountTutorialFiles();
+			await fsLoad();
+
+			// Preload tools so by the time the user needs them, they are cached. We're done fetching
+			// data from the server so won't compete with other fetch requests.  We use "&" to download
+			// files in parallel as much as possible. The alternative would be to download .bin
+			// files directly but we'd have to generate a list of .bin from `debian-base-fs.json`,
+			// which is prone to changes.
+			$cli.exec(`sync & echo & ls & ll & pwd`, { mode: EXEC_MODE_BUS });
+			$cli.exec(tools.map((t) => `timeout 2 ${t}`).join(" & "), { mode: EXEC_MODE_BUS });
+
+			// Run initialization commands
+			addLoadingStatus("Initializing environment...");
+			$cli.exec(init);
+			// Set initial terminal size, otherwise sometimes doesn't call that function at load time
+			handleResize(true);
+			// Focus cursor on command line
+			$cli.xterm.focus();
+
+			// Sync date and time (otherwise continues from date/time from last boot)
+			$cli.exec(`date -s "${new Date().toString()}"`, { mode: EXEC_MODE_BUS });
+
+			// Make sure root@localhost prompt shows up on screen
+			addLoadingStatus("Putting the finishing touches...");
+			timerWaitForPrompt = setInterval(() => {
+				if (!initial_screen.includes("root@localhost")) {
+					$cli.exec("");
+					// Press Ctrl + L (key code 12) to show the prompt but without extra lines above it
+					$cli.emulator.bus.send(BUS_INPUT, 12);
+					if (intro) $cli.exec(intro);
+				} else {
+					$cli.emulator.remove_listener(BUS_OUTPUT, listenerWaitForPrompt);
+					clearInterval(timerWaitForPrompt);
+					loading = false;
+					console.timeEnd("initialize");
+
+					// Start syncing FS
+					fsSync();
+				}
+			}, 200);
+		} catch (error) {
+			console.error(error);
+			loading = false;
+			loadError = `Failed to finish setting up the terminal: ${error?.message || error}`;
+		}
 	});
 }
 
@@ -391,6 +411,13 @@ async function mountLocalFile(event) {
 {/if}
 
 <!-- Terminal -->
+{#if loadError}
+	<Alert color="danger">
+		<p class="mb-2">The terminal failed to load:</p>
+		<pre class="mb-2 text-wrap">{loadError}</pre>
+		<Button color="danger" outline size="sm" on:click={() => initialize(terminalId)}>Retry</Button>
+	</Alert>
+{/if}
 {#if loading}
 	<div style="position:absolute">
 		<div class="text-light font-monospace small">
