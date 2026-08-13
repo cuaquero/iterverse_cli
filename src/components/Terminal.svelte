@@ -34,11 +34,13 @@ export let assets = []; // Files to preload on the FS from assets.sandbox.bio/tu
 export let init = ""; // Command to run to initialize the environment (optional)
 export let tools = []; // For these tools, pre-download .bin files (optional)
 export let intro = ""; // Intro string to display on Terminal once ready (optional; not currently used in any tutorial)
+export let complete = false; // Whether the student has reached the end of the lab (shows the export button)
 
 let loading = true; // Loading the terminal
 let loadingStatus = []; // Loading progress to show (each element = 1 line)
 let loadError = null; // Set with an error message if terminal initialization fails
 let mounted = false; // Component is mounted and ready to go
+let sessionStart; // Timestamp this terminal was mounted, i.e. when the student started this lab session
 let divXtermTerminal; // Xterm.js terminal
 let inputMountFiles; // Hidden HTML file input element for mounting local file
 let inputMountFolder; // Hidden HTML file input element for mounting local folder
@@ -90,7 +92,10 @@ function getEnvironmentInfo() {
 
 // Needs to be mounted or get errors on first mount
 $: if (mounted && terminalId) initialize(terminalId);
-onMount(() => (mounted = true));
+onMount(() => {
+	sessionStart = Date.now();
+	mounted = true;
+});
 onDestroy(cleanupTimers);
 
 function cleanupTimers() {
@@ -375,6 +380,48 @@ function exportHTML() {
 	window.open(url);
 }
 
+// Strip ANSI/VT100 escape codes so the exported .txt file is plain, readable text
+function stripAnsi(text) {
+	// eslint-disable-next-line no-control-regex
+	return text.replace(/\x1b\[[0-9;?]*[a-zA-Z]/g, "").replace(/\x1b\][^\x07]*(\x07|\x1b\\)/g, "");
+}
+
+// Build a token embedding the session start/end times (hex-encoded) plus random bits for
+// uniqueness. This runs entirely client-side with no server secret, so it's a soft audit
+// trail for instructors comparing exports, not a tamper-proof cheating check.
+function generateExportToken(startMs, endMs) {
+	const startHex = startMs.toString(16).padStart(10, "0").slice(-10);
+	const endHex = endMs.toString(16).padStart(10, "0").slice(-10);
+	const randomHex = crypto.randomUUID().replace(/-/g, "").slice(0, 12);
+	const hex = startHex + endHex + randomHex;
+	return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+}
+
+// Export terminal history as a .txt file for students to upload to Canvas
+function exportHistory() {
+	const exportTime = Date.now();
+	const token = generateExportToken(sessionStart, exportTime);
+	const history = stripAnsi($cli.addons.serialize.serialize());
+
+	const contents = [
+		`CLI Box lab export`,
+		`Lab: ${terminalId}`,
+		`Session started: ${new Date(sessionStart).toISOString()}`,
+		`Exported:        ${new Date(exportTime).toISOString()}`,
+		`Verification token: ${token}`,
+		``,
+		`--- Terminal history ---`,
+		history
+	].join("\n");
+
+	const blob = new Blob([contents], { type: "text/plain" });
+	const url = URL.createObjectURL(blob);
+	const fileLink = document.createElement("a");
+	fileLink.href = url;
+	fileLink.download = `${terminalId}-export-${exportTime}.txt`;
+	fileLink.click();
+}
+
 // Mount local file to virtual file system
 async function mountLocalFile(event) {
 	const files = event.target.files;
@@ -411,6 +458,12 @@ async function mountLocalFile(event) {
 {/if}
 
 <!-- Terminal -->
+{#if complete && !loading && !loadError}
+	<Alert color="success" class="d-flex justify-content-between align-items-center">
+		<span>Lab complete! Export your terminal history to upload to Canvas.</span>
+		<Button color="success" size="sm" on:click={exportHistory}>Export history (.txt)</Button>
+	</Alert>
+{/if}
 {#if loadError}
 	<Alert color="danger">
 		<p class="mb-2">The terminal failed to load:</p>

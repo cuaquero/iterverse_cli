@@ -104,6 +104,7 @@ afterNavigate(() => {
 					tools={tutorial.tools || []}
 					intro={tutorial.intro || ""}
 					init={tutorial.init || ""}
+					complete={isLastStep}
 				/>
 			</div>
 		{:else}
