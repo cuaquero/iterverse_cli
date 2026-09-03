@@ -110,18 +110,29 @@ $: path = $page.url.pathname;
 	width: auto;
 	display: block;
 }
+/* !important throughout this block: sveltestrap's <Styles /> injects the
+   Bootstrap CDN <link> into <head> at runtime, after this component's own
+   compiled CSS - with equal ".btn-primary"/"a" specificity, source order
+   decides, and Bootstrap's link lands later. That made these overrides
+   lose to Bootstrap's default blue on the deployed build (confirmed via
+   computed style on the live site - not a timing fluke, a real, pre-
+   existing bug from before this rebrand, just never caught until now). */
 :global(.btn-primary) {
-	--bs-btn-bg: #d22030;
-	--bs-btn-border-color: #d22030;
-	--bs-btn-hover-bg: #a81826;
-	--bs-btn-hover-border-color: #a81826;
-	--bs-btn-active-bg: #a81826;
-	--bs-btn-active-border-color: #a81826;
+	--bs-btn-bg: #d22030 !important;
+	--bs-btn-border-color: #d22030 !important;
+	--bs-btn-hover-bg: #a81826 !important;
+	--bs-btn-hover-border-color: #a81826 !important;
+	--bs-btn-active-bg: #a81826 !important;
+	--bs-btn-active-border-color: #a81826 !important;
 }
-:global(a) {
-	color: #d22030;
+/* :not(.btn) - sveltestrap's <Button href="..."> renders as <a class="btn
+   btn-primary">, so an unscoped override here would win over Bootstrap's
+   own white button text (same !important-vs-source-order fight as above)
+   and make button labels the same red as their background. */
+:global(a:not(.btn)) {
+	color: #d22030 !important;
 }
-:global(a:hover) {
-	color: #a81826;
+:global(a:not(.btn):hover) {
+	color: #a81826 !important;
 }
 </style>
