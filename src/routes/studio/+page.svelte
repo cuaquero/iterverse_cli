@@ -143,7 +143,7 @@ marked.use({ renderer, extensions: [tagAlert, tagExecute] });
 </script>
 
 <svelte:head>
-	<title>Studio - sandbox.bio</title>
+	<title>Studio - Iterverse CLI</title>
 </svelte:head>
 
 <!-- Tutorial -->

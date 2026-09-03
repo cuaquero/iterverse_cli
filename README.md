@@ -1,4 +1,6 @@
-# cli_box
+# Iterverse CLI
+
+Live at [cli.iterverse.net](https://cli.iterverse.net).
 
 Browser-based command line labs for Bridgerland Technical College. Each lab runs a real Linux shell compiled to WebAssembly, so students need nothing installed and cannot damage anything.
 

@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Labs - cli_box</title>
+	<title>Labs - Iterverse CLI</title>
 </svelte:head>
 
 <slot />

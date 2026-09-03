@@ -8,7 +8,7 @@ $: path = $page.url.pathname;
 </script>
 
 <svelte:head>
-	<title>cli_box</title>
+	<title>Iterverse CLI</title>
 	<script src="/v86/xterm.js"></script>
 </svelte:head>
 
@@ -17,9 +17,17 @@ $: path = $page.url.pathname;
 
 <Navbar light container color="white" expand="md" class="border-bottom">
 	<NavbarBrand href="/">
-		<img class="brand-mark" src="/logo-mark.png" alt="Bridgerland Technical College" />
-		<span class="brand-name">cli_box</span>
-		<span class="brand-sub d-none d-md-inline">Bridgerland Technical College</span>
+		<!-- Inline, not <img src="...svg">: an externally-referenced SVG renders
+		     in a sandboxed context with no access to this page's own loaded
+		     Roboto, so wordmark text inside it would silently fall back to a
+		     system font. -->
+		<svg class="brand-mark" viewBox="0 0 92 92" width="26" height="26" role="img" aria-label="Iterverse">
+			<polygon points="30,18 62,18 78,46 62,74 30,74 14,46" fill="none" stroke="#d22030" stroke-width="11" stroke-linejoin="miter" />
+			<rect x="41.5" y="31" width="9" height="30" fill="#36393b" />
+		</svg>
+		<span class="brand-name"><span class="wm-iter">iter</span><span class="wm-verse">verse</span> CLI</span>
+		<span class="brand-divider" aria-hidden="true" />
+		<img class="brand-btech-mark" src="/logo-mark.png" alt="Bridgerland Technical College" />
 	</NavbarBrand>
 	<NavbarToggler on:click={() => (isNavbarOpen = !isNavbarOpen)} />
 	<Collapse isOpen={isNavbarOpen} navbar expand="md" on:update={(event) => (isNavbarOpen = event.detail.isOpen)}>
@@ -65,25 +73,42 @@ $: path = $page.url.pathname;
 {/if}
 
 <style>
+:global(body) {
+	font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
 :global(.navbar-brand) {
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
 }
 .brand-mark {
-	height: 30px;
-	width: auto;
-	display: block;
+	flex: 0 0 auto;
 }
 .brand-name {
 	font-weight: 700;
 	color: #36393b;
 }
-.brand-sub {
-	font-size: 10px;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
+/* Wordmark weight/color split per design-system/assets/iterverse/brand.md:
+   lowercase "iterverse", 700 red "iter" + 300 gray "verse" - the only
+   emphasis the wordmark gets; the product name after it stays in the
+   navbar's normal brand color/weight rather than adding a third one. */
+.brand-name .wm-iter {
+	font-weight: 700;
+	color: #d22030;
+}
+.brand-name .wm-verse {
+	font-weight: 300;
 	color: #6a6a70;
+}
+.brand-divider {
+	width: 1px;
+	height: 20px;
+	background: #e0e0e2;
+}
+.brand-btech-mark {
+	height: 20px;
+	width: auto;
+	display: block;
 }
 :global(.btn-primary) {
 	--bs-btn-bg: #d22030;

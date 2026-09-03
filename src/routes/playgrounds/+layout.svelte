@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Playgrounds - sandbox.bio</title>
+	<title>Playgrounds - Iterverse CLI</title>
 </svelte:head>
 
 <slot />

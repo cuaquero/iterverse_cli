@@ -4,7 +4,7 @@ import { playgrounds } from "$stores/tutorials";
 </script>
 
 <svelte:head>
-	<title>Playgrounds - sandbox.bio</title>
+	<title>Playgrounds - Iterverse CLI</title>
 </svelte:head>
 
 <h3>Playgrounds</h3>

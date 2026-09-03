@@ -33,7 +33,7 @@ onMount(async () => {
 </script>
 
 <svelte:head>
-	<title>{tool.name} playground - sandbox.bio</title>
+	<title>{tool.name} playground - Iterverse CLI</title>
 </svelte:head>
 
 {#if tool}

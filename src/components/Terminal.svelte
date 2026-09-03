@@ -70,6 +70,10 @@ const environments = {
 	"cli-box.itstem.org": {
 		url: URL_ASSETS,
 		v86: "prd/"
+	},
+	"cli.iterverse.net": {
+		url: URL_ASSETS,
+		v86: "prd/"
 	}
 };
 
@@ -404,7 +408,7 @@ function exportHistory() {
 	const history = stripAnsi($cli.addons.serialize.serialize());
 
 	const contents = [
-		`CLI Box lab export`,
+		`Iterverse CLI lab export`,
 		`Lab: ${terminalId}`,
 		`Session started: ${new Date(sessionStart).toISOString()}`,
 		`Exported:        ${new Date(exportTime).toISOString()}`,
