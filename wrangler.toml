@@ -12,3 +12,23 @@ binding = "ASSETS"
 
 [vars]
 PUBLIC_USE_PRD_ASSETS = "true"
+
+# Not secret - a team domain and an audience tag are just identifiers,
+# visible in the Zero Trust dashboard and every Access redirect URL (see
+# iterverse_hub's enroll.ts/admin.ts for the canonical version of this
+# comment). ACCESS_AUD is specific to the Access Application gating THIS
+# service's /auth/access* - get it from Zero Trust dashboard -> Access ->
+# Applications -> (that app) -> Overview -> Application Audience (AUD) Tag.
+ACCESS_TEAM_DOMAIN = "dawn-mountain-9c54.cloudflareaccess.com"
+ACCESS_AUD = "REPLACE_ME_WITH_REAL_AUD"
+ROSTER_API_URL = "https://roster-api.iterverse.net"
+
+# Session store for src/lib/server/session.js. "SESSIONS" was already
+# taken as a namespace *title* by emu_print's own session store (titles
+# are account-unique, bindings aren't) - this one's titled "CLI_SESSIONS"
+# but keeps the same "SESSIONS" binding name the code across every
+# Iterverse service uses. Created with:
+#   npx wrangler kv namespace create CLI_SESSIONS
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "c6412210eac54b93a2342984d1f5129d"
