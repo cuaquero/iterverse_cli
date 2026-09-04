@@ -23,6 +23,18 @@ ACCESS_TEAM_DOMAIN = "dawn-mountain-9c54.cloudflareaccess.com"
 ACCESS_AUD = "3f035bae1ea2f3231d3f73b68ea099cdc620d49304adb1481f66d4bdb78b076d"
 ROSTER_API_URL = "https://roster-api.iterverse.net"
 
+# ROSTER_SERVICE_KEY is a secret, not a var - not stored here
+# (`wrangler secret put ROSTER_SERVICE_KEY`). It must be the exact same
+# value as iterverse_hub's own SERVICE_KEY secret and every other
+# product's ROSTER_SERVICE_KEY (koodo-bridge, emu_print) - a mismatch
+# here fails every entitlement check with a 401, which this app's own
+# code treats identically to "not entitled" and shows as a normal
+# /no-access page, not an error. That silent-failure mode is exactly
+# what happened on 2026-09-04 (a hand-copied value drifted out of sync)
+# and cost a real debugging session to track down. Fixed by rotating
+# the value and pushing the identical new secret to all four services
+# in one pass rather than re-copying it by hand again.
+
 # Session store for src/lib/server/session.js. "SESSIONS" was already
 # taken as a namespace *title* by emu_print's own session store (titles
 # are account-unique, bindings aren't) - this one's titled "CLI_SESSIONS"
