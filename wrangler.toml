@@ -9,6 +9,14 @@ custom_domain = true
 [assets]
 directory = ".svelte-kit/cloudflare"
 binding = "ASSETS"
+# No run_worker_first: everything under static/ (JS bundle, the v86 WASM
+# runtime, lab datasets under static/data/) is served directly by
+# Cloudflare's edge and never reaches src/hooks.server.js's session gate -
+# a security-audit finding, accepted rather than fixed since that content
+# is public curriculum data and a public-domain emulator binary. See
+# hooks.server.js's header comment. Flip this to true (and have the
+# Worker fall back to env.ASSETS.fetch for anything it doesn't handle) if
+# a future lab ever needs to ship a non-public dataset here.
 
 [vars]
 PUBLIC_USE_PRD_ASSETS = "true"

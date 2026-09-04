@@ -1,8 +1,18 @@
-// Gates the whole app behind a valid, entitlement-checked session - see
-// src/routes/auth/access/+server.js for how that session gets created.
-// SvelteKit has one server hook, not per-folder Pages Functions
-// middleware (emu_print/Simulations' pattern), so the equivalent guard
-// lives here instead of a _middleware.js per subtree.
+// Gates every request that actually reaches this Worker behind a valid,
+// entitlement-checked session - see src/routes/auth/access/+server.js for
+// how that session gets created. SvelteKit has one server hook, not
+// per-folder Pages Functions middleware (emu_print/Simulations' pattern),
+// so the equivalent guard lives here instead of a _middleware.js per
+// subtree.
+//
+// NOT actually every route, despite the above: wrangler.toml's [assets]
+// block has no `run_worker_first`, so Cloudflare serves everything under
+// static/ (the compiled JS bundle, the v86 WASM runtime, lab datasets
+// under static/data/) directly at the edge, without this hook ever
+// running - see that file's own comment. Safe only because that content
+// is public curriculum data and a public-domain emulator binary, never
+// anything that should require a session. Any future lab dataset needs
+// checking against that assumption before landing under static/data/.
 import { getSessionUser } from "$lib/server/session";
 
 const PUBLIC_PATHS = ["/auth/access", "/no-access"];
