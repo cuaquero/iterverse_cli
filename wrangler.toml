@@ -20,7 +20,7 @@ PUBLIC_USE_PRD_ASSETS = "true"
 # service's /auth/access* - get it from Zero Trust dashboard -> Access ->
 # Applications -> (that app) -> Overview -> Application Audience (AUD) Tag.
 ACCESS_TEAM_DOMAIN = "dawn-mountain-9c54.cloudflareaccess.com"
-ACCESS_AUD = "REPLACE_ME_WITH_REAL_AUD"
+ACCESS_AUD = "3f035bae1ea2f3231d3f73b68ea099cdc620d49304adb1481f66d4bdb78b076d"
 ROSTER_API_URL = "https://roster-api.iterverse.net"
 
 # Session store for src/lib/server/session.js. "SESSIONS" was already
