@@ -1,10 +1,29 @@
-# Iterverse CLI
+<div align="center">
+  <img src="static/assets/iterverse/mark.svg" width="96px" height="96px" alt="Iterverse CLI logo" />
+</div>
 
-Live at [cli.iterverse.net](https://cli.iterverse.net).
+<h1 align="center">Iterverse CLI</h1>
 
-Browser-based command line labs for Bridgerland Technical College. Each lab runs a real Linux shell compiled to WebAssembly, so students need nothing installed and cannot damage anything.
+<h3 align="center">
+  Browser-based command line labs for Bridgerland Technical College
+</h3>
 
-Adapted from [sandbox.bio](https://sandbox.bio) (MIT licensed).
+Live at [cli.iterverse.net](https://cli.iterverse.net). Each lab runs a
+real Linux shell compiled to WebAssembly, so students need nothing
+installed and cannot damage anything. Adapted from
+[sandbox.bio](https://sandbox.bio) (MIT licensed).
+
+It's part of **Iterverse**, BTECH IT's umbrella platform alongside
+[Reader](https://github.com/cuaquero/iterverse_reader),
+[Labs](https://github.com/cuaquero/iterverse_labs),
+[Hub](https://github.com/cuaquero/iterverse_hub) (the shared roster/
+entitlement service this repo depends on),
+[Simulations](https://github.com/cuaquero/iterverse_simulations),
+[Packets](https://github.com/cuaquero/iterverse_packets),
+[Scripts](https://github.com/cuaquero/iterverse_scripts), and
+[HelpDesk](https://github.com/cuaquero/iterverse_helpdesk) — see the Labs
+repo's `design-system/` for the shared brand tokens and Iterverse mark
+every product draws from.
 
 ## Labs
 
