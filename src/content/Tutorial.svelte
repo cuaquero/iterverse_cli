@@ -51,7 +51,7 @@ afterNavigate(() => {
 										class="badge ms-0"
 										class:bg-success={tag == "beginner"}
 										class:bg-danger={tag == "difficult"}
-										style={tag == "intermediate" ? "background-color:#fd7e14" : ""}>{tag}</span
+										style={tag == "intermediate" ? "background-color:#fd7e14;color:#212529" : ""}>{tag}</span
 									>
 								{/each}
 							</h6>

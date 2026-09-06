@@ -16,7 +16,10 @@ const tagColors = {
 				<!-- Tags -->
 				<div>
 					{#each info.difficulty || [] as tag}
-						<Badge color="{tagColors[tag]} bg-opacity-75">{tag}</Badge>
+						<Badge
+							color="{tagColors[tag]} bg-opacity-75"
+							class={tagColors[tag] === "warning" ? "text-dark" : ""}>{tag}</Badge
+						>
 					{/each}
 					{#each info.tags || [] as tag}
 						<!-- Show tags as primary if not listing tutorials (if tutorials, too many colors) -->
