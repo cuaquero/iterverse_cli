@@ -33,7 +33,7 @@ $: path = $page.url.pathname;
 	<Collapse isOpen={isNavbarOpen} navbar expand="md" on:update={(event) => (isNavbarOpen = event.detail.isOpen)}>
 		<Nav class="ms-auto" navbar>
 			<NavItem>
-				<NavLink href="/" active={path === "/"}>Labs</NavLink>
+				<NavLink href="/" active={path === "/"} data-sveltekit-reload>Labs</NavLink>
 			</NavItem>
 			<NavItem>
 				<NavLink href="/tutorials/playground" active={path.startsWith("/tutorials/playground")} data-sveltekit-reload>Sandbox</NavLink>
