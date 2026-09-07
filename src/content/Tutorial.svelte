@@ -30,6 +30,14 @@ afterNavigate(() => {
 </script>
 
 <div class="container-fluid pb-3 px-0">
+	{#if tutorial.steps.length > 0}
+		<div class="desktop-recommended-notice">
+			<Alert color="warning">
+				This lesson works best on a larger screen — the terminal needs real
+				keyboard input and room to read commands clearly.
+			</Alert>
+		</div>
+	{/if}
 	<div class="d-grid gap-2" style="grid-template-columns: {tutorial.steps.length > 0 ? '1fr 2fr' : ''}; height:85vh; max-height:85vh">
 		{#if tutorial.steps.length > 0}
 			<div class="bg-light border rounded-3 p-2 d-flex align-items-end flex-column" style="width:25vw; max-width:25vw">
@@ -150,9 +158,21 @@ afterNavigate(() => {
 	cursor: pointer;
 }
 
+.desktop-recommended-notice {
+	display: none;
+}
+
 @media only screen and (max-width: 768px) {
 	.mobile-hide {
 		display: none;
+	}
+
+	/* The lesson grid (sidebar + terminal) doesn't reflow for narrow
+	   screens - rather than squeeze a real keyboard-driven terminal into
+	   half a phone-width column, tell the student up front rather than
+	   let them discover it's cramped. */
+	.desktop-recommended-notice {
+		display: block;
 	}
 }
 </style>

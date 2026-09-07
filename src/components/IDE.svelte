@@ -50,6 +50,19 @@ function initEditor(lang) {
 					return true;
 				},
 				preventDefault: true
+			},
+			// Tab inserts a literal tab character here rather than moving focus
+			// (see above), which traps a keyboard-only user inside the editor
+			// with no way to Tab back out - CodeMirror's own recommended fix:
+			// Escape blurs the editor, releasing normal Tab-based focus
+			// movement; clicking or pressing Enter back into the editor
+			// re-enters it, same as before.
+			{
+				key: "Escape",
+				run: (view) => {
+					view.contentDOM.blur();
+					return true;
+				}
 			}
 		]),
 		// Don't need all of basicSetup (https://github.com/codemirror/basic-setup/blob/main/src/codemirror.ts#L47)
