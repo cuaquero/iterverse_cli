@@ -21,7 +21,7 @@ entitlement service this repo depends on),
 [Simulations](https://github.com/cuaquero/iterverse_simulations),
 [Packets](https://github.com/cuaquero/iterverse_packets),
 [Scripts](https://github.com/cuaquero/iterverse_scripts), and
-[HelpDesk](https://github.com/cuaquero/iterverse_helpdesk) — see the Labs
+[HelpDesk](https://github.com/cuaquero/iterverse_helpdesk). See the Labs
 repo's `design-system/` for the shared brand tokens and Iterverse mark
 every product draws from.
 
@@ -36,8 +36,8 @@ every product draws from.
 ## Local development
 
 ```bash
-git clone https://github.com/mfoster-stem/cli_box.git
-cd cli_box
+git clone https://github.com/cuaquero/iterverse_cli.git
+cd iterverse_cli
 ./bin/setup.sh
 ```
 
@@ -59,9 +59,9 @@ cd cli_box
 
 Steps are Markdown with Svelte components available:
 
-- `<Execute command={"ls -l"} />` — a button that pastes and runs a command in the student's terminal.
-- `<Exercise criteria={[...]} hints={[...]} />` — checked criteria with progressive hints.
-- `<Quiz ... />` — multiple choice (radio if one answer, checkboxes if several).
-- `> text` — an emphasized callout box.
+- `<Execute command={"ls -l"} />`: a button that pastes and runs a command in the student's terminal.
+- `<Exercise criteria={[...]} hints={[...]} />`: checked criteria with progressive hints.
+- `<Quiz ... />`: multiple choice (radio if one answer, checkboxes if several).
+- `> text`: an emphasized callout box.
 
 `tools` lists the command-line binaries the lab needs; they are fetched at load time, so only list what the lab actually uses.
