@@ -27,9 +27,13 @@ async function checkRosterEntitlement(env, email) {
 
 // Only a same-origin relative path is allowed here, never an absolute
 // URL or a protocol-relative "//host" - this value comes straight from a
-// query param on an otherwise-public redirect target.
+// query param on an otherwise-public redirect target. Backslashes are
+// rejected too: browsers normalize a leading "/\" (or "\/", "\\") into
+// "//" when resolving a URL, so "/\evil.com" would otherwise slip past
+// the "//" check above and resolve as a protocol-relative absolute URL
+// to evil.com.
 function safeRedirectPath(raw) {
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/";
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//") || raw.includes("\\")) return "/";
   return raw;
 }
 

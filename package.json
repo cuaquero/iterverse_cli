@@ -35,7 +35,6 @@
 		"lodash": "^4.17.21",
 		"marked": "^4.2.12",
 		"pretty-bytes": "^6.0.0",
-		"showdown": "^2.1.0",
 		"svelte-autosize": "^1.0.1",
 		"svelte-watch-resize": "^1.0.3",
 		"sveltestrap": "^5.11.2",
