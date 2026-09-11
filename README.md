@@ -20,8 +20,9 @@ It's part of **Iterverse**, BTECH IT's umbrella platform alongside
 entitlement service this repo depends on),
 [Simulations](https://github.com/cuaquero/iterverse_simulations),
 [Packets](https://github.com/cuaquero/iterverse_packets),
-[Scripts](https://github.com/cuaquero/iterverse_scripts), and
-[HelpDesk](https://github.com/cuaquero/iterverse_helpdesk). See the Labs
+[Scripts](https://github.com/cuaquero/iterverse_scripts),
+[HelpDesk](https://github.com/cuaquero/iterverse_helpdesk), and
+[Type](https://github.com/cuaquero/iterverse_type). See the Labs
 repo's `design-system/` for the shared brand tokens and Iterverse mark
 every product draws from.
 

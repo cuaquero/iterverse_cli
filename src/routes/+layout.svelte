@@ -15,8 +15,18 @@ $: path = $page.url.pathname;
 <!-- Bootstrap CSS and icons -->
 <Styles />
 
+<!--
+	Every internal href in this navbar needs data-sveltekit-reload. This app
+	has no server load() anywhere, so without it SvelteKit's client-side
+	router swaps the page in-place without ever hitting the Worker - which
+	means hooks.server.js's session gate never runs. Missed twice already:
+	the "Labs" link (fixed 2026-09-05, f525436) and this brand/logo link
+	(fixed 2026-09-11) both let a signed-out or not-yet-entitled visitor
+	navigate straight into the real app from a public page like /no-access.
+	Check this before adding any new href here.
+-->
 <Navbar light container color="white" expand="md" class="border-bottom">
-	<NavbarBrand href="/">
+	<NavbarBrand href="/" data-sveltekit-reload>
 		<!-- Inline, not <img src="...svg">: an externally-referenced SVG renders
 		     in a sandboxed context with no access to this page's own loaded
 		     Roboto, so wordmark text inside it would silently fall back to a

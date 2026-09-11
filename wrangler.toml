@@ -1,3 +1,18 @@
+# `name` must match this Worker's actual name on Cloudflare exactly -
+# wrangler resolves every command (deploy, secret put, tail, deployments
+# list) against whatever's here (or an explicit --name). It went stale
+# once already: this was "cli-box" from before the Iterverse rebrand,
+# left unchanged after the Worker itself was renamed to "iterverse-cli"
+# in the dashboard. Nothing broke loudly - deploys and dashboard access
+# still worked, since a rename is in-place and the old script name
+# simply stops existing - but `wrangler secret put`/`wrangler tail`
+# run with a stale `name` either fail outright (if the old name is
+# fully gone, as it was here) or, worse, silently target the wrong
+# resource if the old name happens to still exist as something else.
+# Caught on 2026-09-11 while debugging why CLI alone (of six sibling
+# services sharing ROSTER_SERVICE_KEY, see below) wasn't granting
+# access. If this product is ever renamed again, update this the same
+# day the Worker itself is renamed, not "whenever someone notices".
 name = "iterverse-cli"
 main = ".svelte-kit/cloudflare/_worker.js"
 compatibility_date = "2024-09-23"
@@ -33,15 +48,41 @@ ROSTER_API_URL = "https://roster-api.iterverse.net"
 
 # ROSTER_SERVICE_KEY is a secret, not a var - not stored here
 # (`wrangler secret put ROSTER_SERVICE_KEY`). It must be the exact same
-# value as iterverse_hub's own SERVICE_KEY secret and every other
-# product's ROSTER_SERVICE_KEY (koodo-bridge, emu_print) - a mismatch
-# here fails every entitlement check with a 401, which this app's own
-# code treats identically to "not entitled" and shows as a normal
-# /no-access page, not an error. That silent-failure mode is exactly
-# what happened on 2026-09-04 (a hand-copied value drifted out of sync)
-# and cost a real debugging session to track down. Fixed by rotating
-# the value and pushing the identical new secret to all four services
-# in one pass rather than re-copying it by hand again.
+# value iterverse_hub calls SERVICE_KEY, under whatever name each
+# consumer happens to use it (SERVICE_KEY for iterverse_hub itself,
+# ad_labs/iterverse-labs-worker, and btech-ticketing/iterverse-helpdesk;
+# ROSTER_SERVICE_KEY for this app, koodo-bridge/iterverse-reader, and
+# iterverse_simulations - six services total, not four; that count grew
+# as Iterverse gained products, keep it current). A mismatch anywhere
+# fails every entitlement check with a 401, which this app's own code
+# treats identically to "not entitled" and shows as a normal /no-access
+# page, not an error - a silent-failure mode that's bitten this exact
+# key twice now:
+#   - 2026-09-04: a hand-copied value drifted out of sync between
+#     services. Fixed by rotating and pushing the identical new secret
+#     to every consumer in one pass rather than re-copying by hand.
+#   - 2026-09-11: same symptom, two compounding causes. First, this
+#     service's own copy had a stray character (likely a trailing
+#     newline/CR from an interactive terminal paste) baked into the
+#     value, which produced an edge-level 400 with an EMPTY body
+#     (never even a 401 from iterverse_hub's own code, since a
+#     malformed Authorization header gets rejected before the request
+#     reaches it) - a good sign to look for if a future mismatch
+#     doesn't behave like the 09-04 incident. Fixed by re-setting the
+#     secret through a file + `cmd /c "... < file"` redirect instead of
+#     an interactive paste, which avoids that class of corruption.
+#     Second, after rotating this key across all six services, the
+#     Pages-hosted ones (koodo-bridge/iterverse-reader,
+#     iterverse_simulations, btech-ticketing/iterverse-helpdesk) kept
+#     failing even with the new secret correctly set, because
+#     `wrangler pages secret put` does NOT apply to the
+#     already-running production deployment the way a Worker's
+#     `wrangler secret put` does (that one gets an automatic "Secret
+#     Change" deployment) - a Pages project needs an actual new
+#     deployment before it picks up a changed secret. Fixed by
+#     redeploying each of those three normally. Whenever this key is
+#     rotated again: redeploy every Pages-based consumer afterward,
+#     don't just assume the secret take effect on its own.
 
 # Session store for src/lib/server/session.js. "SESSIONS" was already
 # taken as a namespace *title* by emu_print's own session store (titles
