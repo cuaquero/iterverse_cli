@@ -35,7 +35,7 @@ $: path = $page.url.pathname;
 			<polygon points="30,18 62,18 78,46 62,74 30,74 14,46" fill="none" stroke="#d22030" stroke-width="11" stroke-linejoin="miter" />
 			<rect x="41.5" y="31" width="9" height="30" fill="#36393b" />
 		</svg>
-		<span class="brand-name"><span class="wm-iter">iter</span><span class="wm-verse">verse</span> CLI</span>
+		<span class="brand-name"><span class="wm-iter">iter</span><span class="wm-verse">verse</span> Terminal</span>
 		<span class="brand-divider" aria-hidden="true" />
 		<img class="brand-btech-mark" src="/logo-mark.png" alt="Bridgerland Technical College" />
 	</NavbarBrand>
