@@ -8,7 +8,7 @@
   Browser-based command line labs for Bridgerland Technical College
 </h3>
 
-Live at [cli.iterverse.net](https://cli.iterverse.net). Each lab runs a
+Live at [terminal.iterverse.net](https://terminal.iterverse.net). Each lab runs a
 real Linux shell compiled to WebAssembly, so students need nothing
 installed and cannot damage anything. Adapted from
 [sandbox.bio](https://sandbox.bio) (MIT licensed).
