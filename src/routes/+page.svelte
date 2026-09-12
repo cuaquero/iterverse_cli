@@ -5,7 +5,7 @@ import LabList from "$components/LabList.svelte";
 </script>
 
 <svelte:head>
-	<title>Iterverse CLI</title>
+	<title>Iterverse Terminal</title>
 </svelte:head>
 
 <div class="d-flex justify-content-between align-items-baseline">

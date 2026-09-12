@@ -21,6 +21,19 @@ compatibility_date = "2024-09-23"
 pattern = "cli.iterverse.net"
 custom_domain = true
 
+# Rename in progress: cli.iterverse.net -> terminal.iterverse.net (see
+# RENAME-PLAN.md). This route alone is enough for wrangler to provision the
+# custom domain on deploy (confirmed by ad_labs/docs/unified-access-vision.md's
+# account of the original cli-box.itstem.org -> cli.iterverse.net move) - but
+# don't deploy this until ACCESS_AUD below has been swapped to a new Access
+# Application scoped to terminal.iterverse.net. Deploying the new route while
+# ACCESS_AUD still points at the old (cli.iterverse.net-scoped) Access App
+# would gate the new hostname behind the wrong app. Once login is verified
+# working end-to-end on terminal.iterverse.net, remove the old route above.
+[[routes]]
+pattern = "terminal.iterverse.net"
+custom_domain = true
+
 [assets]
 directory = ".svelte-kit/cloudflare"
 binding = "ASSETS"
@@ -42,8 +55,16 @@ PUBLIC_USE_PRD_ASSETS = "true"
 # comment). ACCESS_AUD is specific to the Access Application gating THIS
 # service's /auth/access* - get it from Zero Trust dashboard -> Access ->
 # Applications -> (that app) -> Overview -> Application Audience (AUD) Tag.
+# Swapped 2026-09-11 to the new "terminal" Access Application (was the
+# "CLI" app's AUD, 3f035bae1ea2f3231d3f73b68ea099cdc620d49304adb1481f66d4bdb78b076d,
+# scoped to cli.iterverse.net/auth/access*) as part of the
+# cli.iterverse.net -> terminal.iterverse.net rename (RENAME-PLAN.md).
+# Don't deploy the cli.iterverse.net route below against this new AUD -
+# that app is scoped to terminal.iterverse.net/auth/access* and would
+# reject logins on the old hostname. Retire the old Access Application
+# only after verifying login works end-to-end on the new hostname.
 ACCESS_TEAM_DOMAIN = "dawn-mountain-9c54.cloudflareaccess.com"
-ACCESS_AUD = "3f035bae1ea2f3231d3f73b68ea099cdc620d49304adb1481f66d4bdb78b076d"
+ACCESS_AUD = "879341b29dc2157414bb5e34c138f18fb527021d8fd43e4c4ba10d2c73ece7eb"
 ROSTER_API_URL = "https://roster-api.iterverse.net"
 
 # ROSTER_SERVICE_KEY is a secret, not a var - not stored here

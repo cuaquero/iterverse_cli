@@ -12,9 +12,9 @@ $: step = +$page.params.step || 0;
 
 <svelte:head>
 	{#if tutorial?.name}
-		<title>{tutorial.name} - Iterverse CLI</title>
+		<title>{tutorial.name} - Iterverse Terminal</title>
 	{:else}
-		<title>Iterverse CLI</title>
+		<title>Iterverse Terminal</title>
 	{/if}
 </svelte:head>
 

@@ -8,7 +8,7 @@ $: path = $page.url.pathname;
 </script>
 
 <svelte:head>
-	<title>Iterverse CLI</title>
+	<title>Iterverse Terminal</title>
 	<script src="/v86/xterm.js"></script>
 </svelte:head>
 

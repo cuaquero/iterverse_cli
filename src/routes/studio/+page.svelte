@@ -143,7 +143,7 @@ marked.use({ renderer, extensions: [tagAlert, tagExecute] });
 </script>
 
 <svelte:head>
-	<title>Studio - Iterverse CLI</title>
+	<title>Studio - Iterverse Terminal</title>
 </svelte:head>
 
 <!-- Tutorial -->

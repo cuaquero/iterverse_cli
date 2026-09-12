@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="static/assets/iterverse/mark.svg" width="96px" height="96px" alt="Iterverse CLI logo" />
+  <img src="static/assets/iterverse/mark.svg" width="96px" height="96px" alt="Iterverse Terminal logo" />
 </div>
 
-<h1 align="center">Iterverse CLI</h1>
+<h1 align="center">Iterverse Terminal</h1>
 
 <h3 align="center">
   Browser-based command line labs for Bridgerland Technical College
@@ -37,8 +37,8 @@ every product draws from.
 ## Local development
 
 ```bash
-git clone https://github.com/cuaquero/iterverse_cli.git
-cd iterverse_cli
+git clone https://github.com/cuaquero/iterverse_terminal.git
+cd iterverse_terminal
 ./bin/setup.sh
 ```
 

@@ -74,6 +74,10 @@ const environments = {
 	"cli.iterverse.net": {
 		url: URL_ASSETS,
 		v86: "prd/"
+	},
+	"terminal.iterverse.net": {
+		url: URL_ASSETS,
+		v86: "prd/"
 	}
 };
 
@@ -408,7 +412,7 @@ function exportHistory() {
 	const history = stripAnsi($cli.addons.serialize.serialize());
 
 	const contents = [
-		`Iterverse CLI lab export`,
+		`Iterverse Terminal lab export`,
 		`Lab: ${terminalId}`,
 		`Session started: ${new Date(sessionStart).toISOString()}`,
 		`Exported:        ${new Date(exportTime).toISOString()}`,

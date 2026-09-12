@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Playgrounds - Iterverse CLI</title>
+	<title>Playgrounds - Iterverse Terminal</title>
 </svelte:head>
 
 <slot />
