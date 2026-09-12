@@ -8,10 +8,10 @@ Iterverse lineup uses short descriptive nouns (`reader`, `labs`, `sims`,
 and this repo's own lab names ("Terminal Basics", "Terminal Exercises")
 already use that word internally.
 
-**Status (2026-09-11):** Fully cut over. Deployed, login verified working
-end-to-end on `terminal.iterverse.net`, and the old route/wrangler.toml
-migration comments are cleaned up. Only remaining step is retiring the old
-Cloudflare Access Application (dashboard-only, see item 1).
+**Status (2026-09-11): done.** Deployed, login verified working
+end-to-end on `terminal.iterverse.net`, old route/wrangler.toml migration
+comments cleaned up, and the old Access Application has been deleted from
+the Zero Trust dashboard. Nothing left on this checklist.
 
 ## 1. Cloudflare Access
 
@@ -20,9 +20,11 @@ Cloudflare Access Application (dashboard-only, see item 1).
   updated to its AUD tag.
 - [x] Deployed. Login verified working end-to-end on
   `terminal.iterverse.net`. As expected, this same deploy broke login on
-  `cli.iterverse.net` (its Access Application still issues the *old* aud,
-  which the worker now rejects) - that hostname's route has since been
+  `cli.iterverse.net` (its Access Application still issued the *old* aud,
+  which the worker then rejected) - that hostname's route has since been
   removed from `wrangler.toml` and redeployed (see item 2).
+- [x] Old `cli.iterverse.net` Access Application deleted from the Zero
+  Trust dashboard by the user.
 - [ ] **Still open, dashboard-only:** delete the old `cli.iterverse.net`
   Access Application in the Zero Trust dashboard (Access -> Applications)
   - don't leave it dangling. Its AUD was
@@ -99,6 +101,8 @@ Cloudflare Access Application (dashboard-only, see item 1).
    confirmed working 2026-09-11.
 4. ~~Update sibling READMEs and this repo's README/display name.~~ Done.
 5. ~~Sweep for remaining hardcoded links.~~ Done.
-6. ~~Retire the old route.~~ Done (removed from `wrangler.toml`,
-   redeployed). **Still open:** retire the old Access Application - see
-   item 1, dashboard-only, can't be done from this environment.
+6. ~~Retire the old route and the old Access Application.~~ Done - route
+   removed from `wrangler.toml` and redeployed; Access Application deleted
+   from the Zero Trust dashboard by the user.
+
+Rename complete.
