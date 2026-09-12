@@ -8,39 +8,33 @@ Iterverse lineup uses short descriptive nouns (`reader`, `labs`, `sims`,
 and this repo's own lab names ("Terminal Basics", "Terminal Exercises")
 already use that word internally.
 
-**Status (2026-09-11):** display-name text, GitHub repo rename, and the
-Access App/AUD swap are all done. What's left: deploy, verify login on
-the new hostname, then retire the old Access Application and route - see
-the per-item notes below.
+**Status (2026-09-11):** Fully cut over. Deployed, login verified working
+end-to-end on `terminal.iterverse.net`, and the old route/wrangler.toml
+migration comments are cleaned up. Only remaining step is retiring the old
+Cloudflare Access Application (dashboard-only, see item 1).
 
 ## 1. Cloudflare Access
 
 - [x] New Access Application created for `terminal.iterverse.net`
   (`terminal.iterverse.net/auth/access*`). `ACCESS_AUD` in `wrangler.toml`
-  updated to its AUD tag (was
-  `3f035bae1ea2f3231d3f73b68ea099cdc620d49304adb1481f66d4bdb78b076d`, the
-  `cli.iterverse.net`-scoped app - not yet deleted, see below).
-- [ ] **Not deployed yet.** Deploying now would apply the new AUD
-  worker-wide - `cli.iterverse.net`'s Access Application issues JWTs with
-  the *old* aud, so as soon as this ships, login on the old hostname
-  breaks (401, JWT aud mismatch) even though the old route/Access App
-  still exist. There's no way to run both AUDs at once with a single
-  `ACCESS_AUD` var - deploying is the cutover moment, not a gradual one.
-  Plan the deploy for that, then verify login on `terminal.iterverse.net`
-  immediately after.
-- [ ] Once verified, retire the old `cli.iterverse.net` Access
-  Application - don't leave it dangling.
+  updated to its AUD tag.
+- [x] Deployed. Login verified working end-to-end on
+  `terminal.iterverse.net`. As expected, this same deploy broke login on
+  `cli.iterverse.net` (its Access Application still issues the *old* aud,
+  which the worker now rejects) - that hostname's route has since been
+  removed from `wrangler.toml` and redeployed (see item 2).
+- [ ] **Still open, dashboard-only:** delete the old `cli.iterverse.net`
+  Access Application in the Zero Trust dashboard (Access -> Applications)
+  - don't leave it dangling. Its AUD was
+  `3f035bae1ea2f3231d3f73b68ea099cdc620d49304adb1481f66d4bdb78b076d`.
 
 ## 2. Custom domain route
 
 - [x] Added `terminal.iterverse.net` as a new `[[routes]]` entry in
-  `wrangler.toml` alongside the existing `cli.iterverse.net` one.
-- [ ] Not deployed yet - see item 1: deploying this ships the new AUD too,
-  so treat "deploy" as the actual cutover moment, not routine prep.
-  `wrangler deploy` provisions the custom domain binding itself (no
-  separate DNS step - see `ad_labs/docs/unified-access-vision.md`'s
-  account of the original `cli-box.itstem.org` move).
-- Remove the old `cli.iterverse.net` route once cut over.
+  `wrangler.toml`, deployed alongside the AUD swap, verified working.
+- [x] Removed the old `cli.iterverse.net` `[[routes]]` entry and the
+  migration comments in `wrangler.toml`, and redeployed - that hostname no
+  longer routes to this Worker at all.
 
 ## 3. Product key - recommend NOT changing it
 
@@ -60,9 +54,17 @@ the per-item notes below.
 - [x] Sibling-list link text (`[CLI]` -> `[Terminal]`) updated in
   `iterverse_hub`, `koodo-bridge`, `iterverse_simulations`,
   `btech-ticketing`, `ad_labs`, `iterverse_type` READMEs, and the
-  `iterverse_hub/worker/public/index.html` product card label/CTA.
-  URLs left pointing at `iterverse_cli`/`cli.iterverse.net` until items 1,
-  2, and 5 land (see below) - no `worker/public/admin.js` labels found.
+  `iterverse_hub/worker/public/index.html` product card label/CTA - no
+  `worker/public/admin.js` labels found. That card's `href` and this
+  repo's own README live-link now point at `terminal.iterverse.net` too,
+  updated once the cutover was verified. GitHub repo URLs updated to
+  `iterverse_terminal` across all seven repos once the rename landed (see
+  item 5).
+- [x] Caught one spot the initial grep sweep missed:
+  `src/routes/+layout.svelte`'s navbar wordmark had " CLI" appended in its
+  own `<span>`, so "Iterverse CLI" never appeared as one literal string. A
+  follow-up agent swept the whole repo for other split/dynamic brand-name
+  strings and found none.
 - [x] Added a follow-up line to `ad_labs/docs/unified-access-vision.md`
   noting the pending rename, without editing the historical entry.
 
@@ -79,19 +81,24 @@ the per-item notes below.
 
 ## 6. Sweep for hardcoded links
 
-- `grep -r "cli.iterverse.net"` across all seven repos to catch anything
-  not covered above (config, tests, docs, CSS comments - `ad_labs` and
-  `iterverse_hub` had several incidental mentions). Done as of
-  2026-09-11 - remaining hits are all intentional (still-live route/links,
-  pending items 1/2/5 above).
+- [x] `grep -r "cli.iterverse.net"` across all seven repos, done twice
+  (once before cutover, once after login was verified to catch the two
+  remaining *live* links - this repo's README and the Hub product card -
+  that were deliberately left pointing at the old hostname until cutover
+  was confirmed working). Remaining hits are all intentional history
+  (RENAME-PLAN.md itself, `wrangler.toml`'s and
+  `ad_labs/docs/unified-access-vision.md`'s narrative comments,
+  `Terminal.svelte`'s `environments` map, which still needs the old
+  hostname's entry as long as anyone has the old URL bookmarked/cached).
 
 ## Suggested execution order
 
 1. ~~Create new Access Application + AUD.~~ Done.
-2. ~~Add new route.~~ Done - not yet deployed.
-3. **Next:** Deploy, then immediately confirm login works on
-   `terminal.iterverse.net` (and be aware `cli.iterverse.net` login breaks
-   at that same moment - see item 1).
+2. ~~Add new route.~~ Done.
+3. ~~Deploy, confirm login works on `terminal.iterverse.net`.~~ Done -
+   confirmed working 2026-09-11.
 4. ~~Update sibling READMEs and this repo's README/display name.~~ Done.
 5. ~~Sweep for remaining hardcoded links.~~ Done.
-6. Retire the old Access Application and the old route.
+6. ~~Retire the old route.~~ Done (removed from `wrangler.toml`,
+   redeployed). **Still open:** retire the old Access Application - see
+   item 1, dashboard-only, can't be done from this environment.
